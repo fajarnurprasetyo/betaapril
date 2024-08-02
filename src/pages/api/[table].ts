@@ -14,9 +14,9 @@ export default async function handler(
       try {
         // @ts-expect-error
         const data = await prisma[table].create({data: req.body});
-        res.status(200).json({success: true, data});
+        res.status(200).json(data);
       } catch (error) {
-        res.status(400).json({success: false, error});
+        res.status(400).send(error);
       }
       break;
     case "PATCH":
@@ -27,9 +27,9 @@ export default async function handler(
           where: {id: req.query.id},
           data: req.body,
         });
-        res.status(200).json({success: true, data});
+        res.status(200).json(data);
       } catch (error) {
-        res.status(400).json({success: false, error});
+        res.status(400).send(error);
       }
       break;
     case "GET":
@@ -46,12 +46,12 @@ export default async function handler(
           data = await prisma[table].findMany(req.body);
         }
         if (data !== null) {
-          res.status(200).json({success: true, data});
+          res.status(200).json(data);
         } else {
-          res.status(404).json({success: false, error: "Not found!"});
+          res.status(404).send("Not found!");
         }
       } catch (error) {
-        res.status(400).json({success: false, error});
+        res.status(400).send(error);
       }
       break;
     case "DELETE":
@@ -61,13 +61,13 @@ export default async function handler(
         const data = await prisma[table].delete({
           where: {id: req.query.id},
         });
-        res.status(200).json({success: true, data});
+        res.status(200).json(data);
       } catch (error) {
-        res.status(404).json({success: false, error: "Not found!"});
+        res.status(404).send("Not found!");
       }
       break;
     default:
-      res.status(405).json({success: false, error: "Method not allowed!"});
+      res.status(405).json("Method not allowed!");
       break;
   }
 }
